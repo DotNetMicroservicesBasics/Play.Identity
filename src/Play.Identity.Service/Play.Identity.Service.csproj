@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>3861b4b0-7319-44df-ac15-9e4a405480a5</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="3.1.2" />
+    <PackageReference Include="Duende.IdentityServer" Version="6.2.0" />
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />     
+    <PackageReference Include="Microsoft.Visualstudio.Web.Codegeneration.design" Version="7.0.0" />    
+    <PackageReference Include="Play.Common" Version="1.0.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Play.Identity.Contracts\Play.Identity.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
