@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "https": {
+    "play.identity.service": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
@@ -25,6 +25,16 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5229",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7227",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

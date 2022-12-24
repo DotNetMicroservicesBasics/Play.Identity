@@ -89,6 +89,10 @@ public class Program
 
         app.UseAuthorization();
 
+        app.UseCookiePolicy(new CookiePolicyOptions()
+        {
+            MinimumSameSitePolicy = SameSiteMode.Lax
+        });
 
         app.MapControllers();
 
