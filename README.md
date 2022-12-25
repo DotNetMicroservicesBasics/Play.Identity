@@ -20,3 +20,9 @@ $env:GH_OWNER="DotNetMicroservicesBasics"
 $env:GH_PAT="[PAT HERE]"
 docker build --secret id=GH_OWNER --secret id=GH_PAT -t play.identity:$version .
 ```
+
+## Run the docker image
+```powershell
+$adminPass="[PASSWORD HERE]"
+docker run -it --rm -p 5229:5229 --name identity -e MongoDbSettings__Host=mongo -e RabbitMqSettings__Host=rabbitmq -e IdentitySettings__AdminUserPassword=$adminPass --network playinfrastructure_default play.identity:$version
+```
