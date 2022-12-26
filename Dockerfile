@@ -24,4 +24,8 @@ RUN dotnet publish "Play.Identity.Service.csproj" -c Release --no-restore -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
+# Change folder permissions to allow key access, commented after changed key file path
+# USER root
+# RUN chmod -R a+rwx "/app"
+# USER appuser
 ENTRYPOINT ["dotnet", "Play.Identity.Service.dll"]

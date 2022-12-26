@@ -4,7 +4,7 @@ Play Economy Identity microservice
 ## Create and publish package
 ```powershell
 
-$version="1.0.2"
+$version="1.0.6"
 $owner="DotNetMicroservicesBasics"
 $local_packages_path="D:\Dev\NugetPackages"
 $gh_pat="PAT HERE"
@@ -24,5 +24,6 @@ docker build --secret id=GH_OWNER --secret id=GH_PAT -t play.identity:$version .
 ## Run the docker image
 ```powershell
 $adminPass="[PASSWORD HERE]"
-docker run -it --rm -p 5229:5229 --name identity -e MongoDbSettings__Host=mongo -e RabbitMqSettings__Host=rabbitmq -e IdentitySettings__AdminUserPassword=$adminPass --network playinfrastructure_default play.identity:$version
+$cosmosDbConnectionString="[CONNECTION_STRING HERE]"
+docker run -it --rm -p 5229:5229 --name identity -e MongoDbSettings__ConnectionString=$cosmosDbConnectionString -e RabbitMqSettings__Host=rabbitmq -e IdentitySettings__AdminUserPassword=$adminPass --network playinfrastructure_default play.identity:$version
 ```

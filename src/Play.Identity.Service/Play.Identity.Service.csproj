@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />     
     <PackageReference Include="Microsoft.Visualstudio.Web.Codegeneration.design" Version="7.0.0" />    
-    <PackageReference Include="Play.Common" Version="1.0.11" />
+    <PackageReference Include="Play.Common" Version="1.0.12" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

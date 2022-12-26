@@ -1,3 +1,4 @@
+using System.Reflection;
 using GreenPipes;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
@@ -46,6 +47,8 @@ public class Program
 
         builder.Services.AddIdentityServer(options =>
         {
+            //Change key path to avoid permissions issue on docker
+            options.KeyManagement.KeyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             options.Events.RaiseSuccessEvents = true;
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseErrorEvents = true;
