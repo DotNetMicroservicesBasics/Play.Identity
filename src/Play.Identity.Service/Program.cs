@@ -1,7 +1,6 @@
 using System.Reflection;
 using GreenPipes;
 using MassTransit;
-using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -39,7 +38,7 @@ public class Program
                             mongoDbSettings.DbName
                         );
 
-        builder.Services.AddMassTransitWithRabbitMq(retryConfig =>
+        builder.Services.AddMassTransitWithMesageBroker(builder.Configuration, retryConfig =>
         {
             retryConfig.Interval(3, TimeSpan.FromSeconds(5));
             retryConfig.Ignore(typeof(UnknownUserException), typeof(InsufficientUserGilException));
