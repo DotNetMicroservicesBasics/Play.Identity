@@ -4,7 +4,7 @@ Play Economy Identity microservice
 ## Create and publish package
 ```powershell
 
-$version="1.0.8"
+$version="1.0.9"
 $owner="DotNetMicroservicesBasics"
 $local_packages_path="D:\Dev\NugetPackages"
 $gh_pat="PAT HERE"
@@ -29,7 +29,7 @@ docker run -it --rm -p 5229:5229 --name identity -e MongoDbSettings__Host=mongo=
 ```
 
 
-## Run the docker image on Azure
+## Run the docker image with az CosmosDb & ServiceBus
 ```powershell
 $adminPass="[PASSWORD HERE]"
 $cosmosDbConnectionString="[CONNECTION_STRING HERE]"
@@ -74,4 +74,7 @@ kubectl describe pod $podname -n $namespace
 
 # list services
 kubectl get services -n $namespace
+
+# see events
+kubectl get events -n $namespace
 ```
