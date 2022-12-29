@@ -1,22 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: identity-deployement
+  name: playidentity-deployement
 spec:
   selector:
     matchLabels:
-      app: identity
+      app: playidentity
   template:
     metadata:
       labels:
-        app: identity
+        app: playidentity
     spec:
       containers:
-      - name: identity
+      - name: playidentity
         image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.8
         env:
           - name: ServiceSettings__MessageBroker
             value: AZURESERVICEBUS
+          - name: MongoDbSettings__ConnectionString
+            valueFrom:
+              secretKeyRef:
+                name: playidentity-secrets
+                key: cosmosdb-connectionstring
+          - name: ServiceBusSettings__ConnectionString
+            valueFrom:
+              secretKeyRef:
+                name: playidentity-secrets
+                key: servicebus-connectionstring
+          - name: IdentitySettings__AdminUserPassword
+            valueFrom:
+              secretKeyRef:
+                name: playidentity-secrets
+                key: admin-password
         resources:
           limits:
             memory: "128Mi"
