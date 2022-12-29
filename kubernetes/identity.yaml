@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-deployement
+spec:
+  selector:
+    matchLabels:
+      app: identity
+  template:
+    metadata:
+      labels:
+        app: identity
+    spec:
+      containers:
+      - name: identity
+        image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.8
+        env:
+          - name: ServiceSettings__MessageBroker
+            value: AZURESERVICEBUS
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5229
