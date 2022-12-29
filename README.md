@@ -71,4 +71,7 @@ kubectl logs $podname -n $namespace
 
 # list pod details
 kubectl describe pod $podname -n $namespace
+
+# list services
+kubectl get services -n $namespace
 ```
