@@ -1,13 +1,17 @@
 using System.Reflection;
 using GreenPipes;
 using MassTransit;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using Play.Common.MassTansit;
 using Play.Common.Settings;
 using Play.Identity.Service.Entities;
 using Play.Identity.Service.Exceptions;
+using Play.Identity.Service.HealthChecks;
 using Play.Identity.Service.HostedServices;
 using Play.Identity.Service.Settings;
 
@@ -68,7 +72,18 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddHealthChecks();
+        builder.Services.AddHealthChecks()
+                        .Add(new HealthCheckRegistration(
+                            "mongodb",
+                        serviceProvider =>
+                        {
+                            var mongoClient = new MongoClient(mongoDbSettings.ConnectionString);
+                            return new MongoDbHealthCheck(mongoClient);
+                        },
+                        HealthStatus.Unhealthy,
+                           new[] { "ready" },
+                           TimeSpan.FromSeconds(3)
+                        ));
 
         var app = builder.Build();
 
@@ -102,7 +117,12 @@ public class Program
 
         app.MapRazorPages();
 
-        app.MapHealthChecks("/health");
+        app.MapHealthChecks("/health/ready", new HealthCheckOptions(){
+            Predicate = (check) => check.Tags.Contains("ready")
+        });
+        app.MapHealthChecks("/health/live", new HealthCheckOptions(){
+            Predicate = (check) => false
+        });
 
         app.Run();
     }
