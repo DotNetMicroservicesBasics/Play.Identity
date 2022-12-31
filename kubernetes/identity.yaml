@@ -18,21 +18,21 @@ spec:
         env:
           - name: ServiceSettings__MessageBroker
             value: AZURESERVICEBUS
-          - name: MongoDbSettings__ConnectionString
-            valueFrom:
-              secretKeyRef:
-                name: playidentity-secrets
-                key: cosmosdb-connectionstring
-          - name: ServiceBusSettings__ConnectionString
-            valueFrom:
-              secretKeyRef:
-                name: playidentity-secrets
-                key: servicebus-connectionstring
-          - name: IdentitySettings__AdminUserPassword
-            valueFrom:
-              secretKeyRef:
-                name: playidentity-secrets
-                key: admin-password
+          # - name: MongoDbSettings__ConnectionString
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: playidentity-secrets
+          #       key: cosmosdb-connectionstring
+          # - name: ServiceBusSettings__ConnectionString
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: playidentity-secrets
+          #       key: servicebus-connectionstring
+          # - name: IdentitySettings__AdminUserPassword
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: playidentity-secrets
+          #       key: admin-password
         resources:
           limits:
             memory: "128Mi"

@@ -56,6 +56,12 @@ kubectl create namespace $namespace
 ## Create kubernetes secrets
 ```powershell
 kubectl create secret generic playidentity-secrets --from-literal=cosmosdb-connectionstring=$cosmosDbConnectionString --from-literal=servicebus-connectionstring=$serviceBusConnetionString --from-literal=admin-password=$adminPass -n $namespace
+
+# list secrets
+kubectl get secrets -n $namespace
+
+#delete secrets 
+kubectl delete secret playidentity-secrets -n $namespace
 ```
 
 ## Create kubernetes pod
@@ -66,13 +72,13 @@ kubectl apply -f .\kubernetes\identity.yaml -n $namespace
 kubectl get pods -n $namespace
 
 # output pod logs
-$podname="playidentity-deployement-599b5d9d8c-wzrz4"
+$podname="playidentity-deployement-6ffc7c76c8-cdgg7"
 kubectl logs $podname -n $namespace
 
 # list pod details
 kubectl describe pod $podname -n $namespace
 
-# list services
+# list services (see puplic ip)
 kubectl get services -n $namespace
 
 # see events
