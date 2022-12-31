@@ -1,6 +1,8 @@
 using System.Reflection;
+using Azure.Identity;
 using GreenPipes;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -22,6 +24,11 @@ public class Program
         var allowedOriginsSettingsKey = "AllowedOrigins";
 
         var builder = WebApplication.CreateBuilder(args);
+        
+        builder.Configuration.AddAzureKeyVault(
+            new Uri("https://playeconomyazurekeyvault.vault.azure.net/"),
+            new DefaultAzureCredential()
+        );
 
         BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
         var serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
