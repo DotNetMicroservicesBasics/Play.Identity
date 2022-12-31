@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using Play.Common.Configuration;
 using Play.Common.HealthChecks;
 using Play.Common.MassTansit;
 using Play.Common.Settings;
@@ -24,11 +25,11 @@ public class Program
         var allowedOriginsSettingsKey = "AllowedOrigins";
 
         var builder = WebApplication.CreateBuilder(args);
-        
-        builder.Configuration.AddAzureKeyVault(
-            new Uri("https://playeconomyazurekeyvault.vault.azure.net/"),
-            new DefaultAzureCredential()
-        );
+
+        if (builder.Environment.IsProduction())
+        {
+            builder.Configuration.ConfigureAzureKeyVault();
+        }
 
         BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
         var serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();

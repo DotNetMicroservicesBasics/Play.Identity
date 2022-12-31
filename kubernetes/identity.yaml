@@ -14,10 +14,12 @@ spec:
       serviceAccountName: playidentity-serviceaccount
       containers:
       - name: playidentity
-        image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.10
+        image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.11
         env:
           - name: ServiceSettings__MessageBroker
             value: AZURESERVICEBUS
+          - name: ServiceSettings__KeyVaultName
+            value: playeconomyazurekeyvault
           # - name: MongoDbSettings__ConnectionString
           #   valueFrom:
           #     secretKeyRef:
