@@ -14,12 +14,14 @@ spec:
       serviceAccountName: playidentity-serviceaccount
       containers:
       - name: playidentity
-        image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.11
+        image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.12
         env:
           - name: ServiceSettings__MessageBroker
             value: AZURESERVICEBUS
           - name: ServiceSettings__KeyVaultName
             value: playeconomyazurekeyvault
+          - name: IdentitySettings__PathBase
+            value: /identity-svc
           # - name: MongoDbSettings__ConnectionString
           #   valueFrom:
           #     secretKeyRef:
@@ -57,7 +59,7 @@ kind: Service
 metadata:
   name: playidentity-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: playidentity
   ports:

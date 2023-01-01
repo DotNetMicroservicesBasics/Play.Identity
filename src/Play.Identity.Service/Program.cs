@@ -31,14 +31,16 @@ public class Program
             builder.Configuration.ConfigureAzureKeyVault();
         }
 
+        builder.Services.Configure<Settings.IdentitySettings>(builder.Configuration.GetSection(nameof(Settings.IdentitySettings)));
+
         BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
+
         var serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
         var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
         var identityServerSettings = builder.Configuration.GetSection(nameof(IdentityServerSettings)).Get<IdentityServerSettings>();
+        var identitySettings = builder.Configuration.GetSection(nameof(Settings.IdentitySettings)).Get<Settings.IdentitySettings>();
 
         // Add services to the container.
-
-        builder.Services.Configure<Settings.IdentitySettings>(builder.Configuration.GetSection(nameof(Common.Settings.IdentitySettings)));
 
         builder.Services.AddDefaultIdentity<ApplicationUser>()
                         .AddRoles<ApplicationRole>()
@@ -96,6 +98,12 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.Use((context, next) =>
+        {
+            context.Request.PathBase = new PathString(identitySettings.PathBase);
+            return next();
+        });
 
         app.UseStaticFiles();
 

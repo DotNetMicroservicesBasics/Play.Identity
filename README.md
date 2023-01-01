@@ -4,7 +4,7 @@ Play Economy Identity microservice
 ## Create and publish package
 ```powershell
 
-$version="1.0.11"
+$version="1.0.12"
 $owner="DotNetMicroservicesBasics"
 $local_packages_path="D:\Dev\NugetPackages"
 $gh_pat="PAT HERE"
@@ -68,11 +68,11 @@ kubectl delete secret playidentity-secrets -n $namespace
 ```powershell
 kubectl apply -f .\kubernetes\identity.yaml -n $namespace
 
-# list pods in name space
+# list pods in namespace
 kubectl get pods -n $namespace -w
 
 # output pod logs
-$podname="playidentity-deployement-579757ccbd-zfm7w"
+$podname="playidentity-deployement-69756d88f7-tdrzq"
 kubectl logs $podname -n $namespace
 
 # list pod details
