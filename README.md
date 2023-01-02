@@ -102,3 +102,12 @@ $AKS_OIDC_ISSUER=az aks show -n $aksname -g $appname --query "oidcIssuerProfile.
 
 az identity federated-credential create --name $namespace --identity-name $namespace --resource-group $appname --issuer $AKS_OIDC_ISSUER --subject system:serviceaccount:"${namespace}":"${namespace}-serviceaccount"
 ```
+
+## Create the signing certifiacate
+```powershell
+kubectl apply -f .\kubernetes\signing-cert.yaml -n $namespace
+
+kubectl get secret -n $namespace
+
+kubectl get secret playidentity-signing-cert -n $namespace -o yaml
+```

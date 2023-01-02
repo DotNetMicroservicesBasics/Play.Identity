@@ -13,46 +13,61 @@ spec:
     spec:
       serviceAccountName: playidentity-serviceaccount
       containers:
-      - name: playidentity
-        image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.13
-        env:
-          - name: ServiceSettings__MessageBroker
-            value: AZURESERVICEBUS
-          - name: ServiceSettings__KeyVaultName
-            value: playeconomyazurekeyvault
-          - name: IdentitySettings__PathBase
-            value: /identity-svc
-          # - name: MongoDbSettings__ConnectionString
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: playidentity-secrets
-          #       key: cosmosdb-connectionstring
-          # - name: ServiceBusSettings__ConnectionString
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: playidentity-secrets
-          #       key: servicebus-connectionstring
-          # - name: IdentitySettings__AdminUserPassword
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: playidentity-secrets
-          #       key: admin-password
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 5229
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: 5229
-          initialDelaySeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: 5229
-          initialDelaySeconds: 10
+        - name: playidentity
+          image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.13
+          env:
+            - name: ServiceSettings__MessageBroker
+              value: AZURESERVICEBUS
+            - name: ServiceSettings__KeyVaultName
+              value: playeconomyazurekeyvault
+            - name: IdentitySettings__PathBase
+              value: /identity-svc
+            - name: IdentitySettings__CertificateCertFilePath
+              value: /certificates/certificate.crt
+            - name: IdentitySettings__CertificateKeyFilePath
+              value: /certificates/certificate.key
+            # - name: MongoDbSettings__ConnectionString
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: playidentity-secrets
+            #       key: cosmosdb-connectionstring
+            # - name: ServiceBusSettings__ConnectionString
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: playidentity-secrets
+            #       key: servicebus-connectionstring
+            # - name: IdentitySettings__AdminUserPassword
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: playidentity-secrets
+            #       key: admin-password
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5229
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 5229
+            initialDelaySeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 5229
+            initialDelaySeconds: 10
+          volumeMounts:
+            - name: certificate-volume
+              mountPath: /certificates
+      volumes: 
+        - name: certificate-volume
+          secret: playidentity-signing-cert
+          items:
+            - key: tls.key
+              path: certificate.key
+            - key: tls.crt
+              path: certificate.crt
 ---
 apiVersion: v1
 kind: Service
