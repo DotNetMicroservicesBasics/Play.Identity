@@ -4,7 +4,7 @@ Play Economy Identity microservice
 ## Create and publish package
 ```powershell
 
-$version="1.0.12"
+$version="1.0.13"
 $owner="DotNetMicroservicesBasics"
 $local_packages_path="D:\Dev\NugetPackages"
 $gh_pat="PAT HERE"
@@ -72,7 +72,7 @@ kubectl apply -f .\kubernetes\identity.yaml -n $namespace
 kubectl get pods -n $namespace -w
 
 # output pod logs
-$podname="playidentity-deployement-69756d88f7-tdrzq"
+$podname="playidentity-deployement-dc7c6cbd-2rkm2"
 kubectl logs $podname -n $namespace
 
 # list pod details

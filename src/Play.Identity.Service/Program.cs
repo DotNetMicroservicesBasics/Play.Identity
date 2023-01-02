@@ -2,6 +2,7 @@ using System.Reflection;
 using Azure.Identity;
 using GreenPipes;
 using MassTransit;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -82,7 +83,16 @@ public class Program
         builder.Services.AddHealthChecks()
                         .AddMongo();
 
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+        });
+
         var app = builder.Build();
+
+        app.UseForwardedHeaders();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
