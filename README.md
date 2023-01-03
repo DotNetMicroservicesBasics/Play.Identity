@@ -72,7 +72,7 @@ kubectl apply -f .\kubernetes\identity.yaml -n $namespace
 kubectl get pods -n $namespace -w
 
 # output pod logs
-$podname="playidentity-deployement-54dd5bf67f-lfjkv"
+$podname="playidentity-deployement-67c468b845-mdzg6"
 kubectl logs $podname -n $namespace
 
 # list pod details
@@ -124,4 +124,24 @@ kubectl get secret playidentity-signing-cert -n $namespace -o yaml
 ## Install Helm Chart
 ```powershell
 helm install playidentity-svc .\helm -f .\helm\values.yaml -n $namespace
+```
+
+## Install Helm Chart from Container Registery
+```powershell
+
+$helmUser=[guid]::Empty.Guid
+$helmPassword=az acr login --name $acrname --expose-token --query accessToken -o tsv
+
+helm registry login "$acrname.azurecr.io" --username $helmUser --password $helmPassword
+
+$hemlChartVersion="0.1.0"
+
+helm upgrade --install playidentity-svc oci://$acrname.azurecr.io/helm/microservice --version $hemlChartVersion -f .\helm\values.yaml -n $namespace
+
+# if failed add --debug to see more info
+helm upgrade --install playidentity-svc oci://$acrname.azurecr.io/helm/microservice --version $hemlChartVersion -f .\helm\values.yaml -n $namespace --debug
+
+# to make sure helm Charts cash updated
+helm repo update
+
 ```
