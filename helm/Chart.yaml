@@ -1,0 +1,4 @@
+apiVersion: v2
+name: micrroservice
+description: Installs a PlayEconomy microserviceName
+version: 0.1.0

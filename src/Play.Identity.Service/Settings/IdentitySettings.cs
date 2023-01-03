@@ -4,7 +4,8 @@ namespace Play.Identity.Service.Settings
     {
         public string AdminUserEmail { get; init; }
         public string AdminUserPassword { get; init; }
-
-        public string PathBase { get; set; }
+        public string PathBase { get; init; }
+        public string CertificateCertFilePath { get; init; }
+        public string CertificateKeyFilePath { get; init; }
     }
 }

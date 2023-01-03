@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using Azure.Identity;
 using GreenPipes;
 using MassTransit;
@@ -38,7 +39,7 @@ public class Program
 
         var serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
         var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
-        var identityServerSettings = builder.Configuration.GetSection(nameof(IdentityServerSettings)).Get<IdentityServerSettings>();
+        
         var identitySettings = builder.Configuration.GetSection(nameof(Settings.IdentitySettings)).Get<Settings.IdentitySettings>();
 
         // Add services to the container.
@@ -55,20 +56,7 @@ public class Program
             retryConfig.Interval(3, TimeSpan.FromSeconds(5));
             retryConfig.Ignore(typeof(UnknownUserException), typeof(InsufficientUserGilException));
         });
-
-        builder.Services.AddIdentityServer(options =>
-        {
-            //Change key path to avoid permissions issue on docker
-            options.KeyManagement.KeyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            options.Events.RaiseSuccessEvents = true;
-            options.Events.RaiseFailureEvents = true;
-            options.Events.RaiseErrorEvents = true;
-        })
-                        .AddAspNetIdentity<ApplicationUser>()
-                        .AddInMemoryApiScopes(identityServerSettings.ApiScopes)
-                        .AddInMemoryApiResources(identityServerSettings.ApiResources)
-                        .AddInMemoryClients(identityServerSettings.Clients)
-                        .AddInMemoryIdentityResources(identityServerSettings.IdentityResources);
+        AddIdentityServer(builder, identitySettings);
 
         builder.Services.AddLocalApiAuthentication();
 
@@ -85,9 +73,9 @@ public class Program
 
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
-                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
         });
 
         var app = builder.Build();
@@ -133,5 +121,31 @@ public class Program
         app.MapPlayEconomyHealthChecks();
 
         app.Run();
+    }
+
+    private static void AddIdentityServer(WebApplicationBuilder builder, Settings.IdentitySettings? identitySettings)
+    {
+        var identityServerSettings = builder.Configuration.GetSection(nameof(IdentityServerSettings)).Get<IdentityServerSettings>();
+        var identityServerBuilder = builder.Services.AddIdentityServer(options =>
+        {
+            //Change key path to avoid permissions issue on docker
+            options.KeyManagement.KeyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            options.Events.RaiseSuccessEvents = true;
+            options.Events.RaiseFailureEvents = true;
+            options.Events.RaiseErrorEvents = true;
+        })
+        .AddAspNetIdentity<ApplicationUser>()
+        .AddInMemoryApiScopes(identityServerSettings.ApiScopes)
+        .AddInMemoryApiResources(identityServerSettings.ApiResources)
+        .AddInMemoryClients(identityServerSettings.Clients)
+        .AddInMemoryIdentityResources(identityServerSettings.IdentityResources);
+
+        if(builder.Environment.IsProduction()){
+            var cert=X509Certificate2.CreateFromPemFile(
+                identitySettings.CertificateCertFilePath,
+                identitySettings.CertificateKeyFilePath
+            );
+            identityServerBuilder.AddSigningCredential(cert);
+        }
     }
 }

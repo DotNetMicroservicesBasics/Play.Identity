@@ -4,7 +4,7 @@ Play Economy Identity microservice
 ## Create and publish package
 ```powershell
 
-$version="1.0.13"
+$version="1.0.15"
 $owner="DotNetMicroservicesBasics"
 $local_packages_path="D:\Dev\NugetPackages"
 $gh_pat="PAT HERE"
@@ -72,17 +72,26 @@ kubectl apply -f .\kubernetes\identity.yaml -n $namespace
 kubectl get pods -n $namespace -w
 
 # output pod logs
-$podname="playidentity-deployement-dc7c6cbd-2rkm2"
+$podname="playidentity-deployement-54dd5bf67f-lfjkv"
 kubectl logs $podname -n $namespace
 
 # list pod details
 kubectl describe pod $podname -n $namespace
+
+#delete pod
+kubectl delete pod $podname -n $namespace
 
 # list services (see puplic ip)
 kubectl get services -n $namespace
 
 # see events
 kubectl get events -n $namespace
+
+# list deployments
+kubectl get deployments -n $namespace
+
+# delete deployment
+kubectl delete deployment playidentity-deployement -n $namespace
 ```
 
 ## Create Azure Managed Identity and granting it access to Key Vault secrets
@@ -110,4 +119,9 @@ kubectl apply -f .\kubernetes\signing-cert.yaml -n $namespace
 kubectl get secret -n $namespace
 
 kubectl get secret playidentity-signing-cert -n $namespace -o yaml
+```
+
+## Install Helm Chart
+```powershell
+helm install playidentity-svc .\helm -f .\helm\values.yaml -n $namespace
 ```

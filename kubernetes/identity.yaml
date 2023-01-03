@@ -14,7 +14,7 @@ spec:
       serviceAccountName: playidentity-serviceaccount
       containers:
         - name: playidentity
-          image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.13
+          image: playeconomyazurecontainerregistry.azurecr.io/play.identity:1.0.15
           env:
             - name: ServiceSettings__MessageBroker
               value: AZURESERVICEBUS
@@ -26,6 +26,10 @@ spec:
               value: /certificates/certificate.crt
             - name: IdentitySettings__CertificateKeyFilePath
               value: /certificates/certificate.key
+            - name: IdentityServerSettings__Clients__1__RedirectUris__0
+              value: https://playeconomygateway.eastus.cloudapp.azure.com/authentication/login-callback
+            - name: IdentityServerSettings__Clients__1__PostLogoutRedirectUris__0
+              value: https://playeconomygateway.eastus.cloudapp.azure.com/authentication/logout-callback
             # - name: MongoDbSettings__ConnectionString
             #   valueFrom:
             #     secretKeyRef:
@@ -44,7 +48,7 @@ spec:
           resources:
             limits:
               memory: "128Mi"
-              cpu: "500m"
+              cpu: "250m"
           ports:
             - containerPort: 5229
           livenessProbe:
@@ -62,12 +66,13 @@ spec:
               mountPath: /certificates
       volumes: 
         - name: certificate-volume
-          secret: playidentity-signing-cert
-          items:
-            - key: tls.key
-              path: certificate.key
-            - key: tls.crt
-              path: certificate.crt
+          secret: 
+            secretName: playidentity-signing-cert
+            items:
+              - key: tls.key
+                path: certificate.key
+              - key: tls.crt
+                path: certificate.crt
 ---
 apiVersion: v1
 kind: Service

@@ -1,0 +1,46 @@
+microserviceName: playidentity
+image: 
+  repository: playeconomyazurecontainerregistry.azurecr.io/play.identity
+  tag: 1.0.15
+envVariables:
+  ServiceSettings__MessageBroker: AZURESERVICEBUS
+  ServiceSettings__KeyVaultName: playeconomyazurekeyvault
+  IdentitySettings__PathBase: /identity-svc
+  IdentitySettings__CertificateCertFilePath: /certificates/certificate.crt
+  IdentitySettings__CertificateKeyFilePath: /certificates/certificate.key
+  IdentityServerSettings__Clients__1__RedirectUris__0: https://playeconomygateway.eastus.cloudapp.azure.com/authentication/login-callback
+  IdentityServerSettings__Clients__1__PostLogoutRedirectUris__0: https://playeconomygateway.eastus.cloudapp.azure.com/authentication/logout-callback
+resources:
+  limits:
+    memory: "128Mi"
+    cpu: "250m"
+container:
+  port: 5229
+  liveness:
+    path: /health/live
+    initialDelaySeconds: 10
+  readiness:
+    path: /health/ready
+    initialDelaySeconds: 10
+  volumeMounts:
+    - name: certificate-volume
+      mountPath: /certificates
+volumes: 
+  - name: certificate-volume
+    secret: 
+      secretName: playidentity-signing-cert
+      items:
+        - key: tls.key
+          path: certificate.key
+        - key: tls.crt
+          path: certificate.crt
+
+service:
+  type: ClusterIP
+  port: 80
+
+certificate:
+  secretName: playidentity-signing-cert
+  hostName: playeconomygateway.eastus.cloudapp.azure.com
+
+identityClientId: 909418d1-303c-4b2c-8b54-10924b504c34
