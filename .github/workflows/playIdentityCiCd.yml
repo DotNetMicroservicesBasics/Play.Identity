@@ -36,15 +36,15 @@ jobs:
         dotnet-version: 7.0.x
         source-url: https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
       env:
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         
     - name: Pack
       run: | 
         dotnet pack src/Play.Identity.Contracts/ \
         --configuration Release \
-        -p:PackageVersion=${{ needs.generate-version.outputs.new_version }} \
+        -p:PackageVersion=${{needs.generate-version.outputs.new_version}} \
         -p:RepositoryUrl=https://github.com/${{github.repository_owner}}/play.identity \
         -o packages
 
     - name: Publish
-      run: dotnet nuget push packages/*.nupkg
+      run: dotnet nuget push packages/*.nupkg --api-key "${{secrets.GITHUB_TOKEN}}"
