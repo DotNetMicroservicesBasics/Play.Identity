@@ -35,7 +35,7 @@ jobs:
         dotnet-version: 7.0.x
         source-url: https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
       env:
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NUGET_AUTH_TOKEN: '%NUGET_AUTH_TOKEN%'
         
     - name: Pack
       run: | 
