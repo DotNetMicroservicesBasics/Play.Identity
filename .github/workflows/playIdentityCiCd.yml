@@ -63,6 +63,6 @@ jobs:
           "GH_OWNER=${{github.repository_owner}}"\ 
           "GH_PAT=${{secrets.NUGET_READ_PAT}}"
         
-        tags: ${{env.ACR_NAME}}.azurecr.io/play.identity:${{needs.generate-version.outputs.new_version}}
+        tags: playeconomyazurecontainerregistry.azurecr.io/play.identity:${{needs.generate-version.outputs.new_version}}
         
     
