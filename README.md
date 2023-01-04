@@ -143,5 +143,9 @@ helm upgrade --install playidentity-svc oci://$acrname.azurecr.io/helm/microserv
 
 # to make sure helm Charts cash updated
 helm repo update
+```
 
+## Required repository secrets for Github workflow
+```powershell
+GH_PAT: Created in GitHub user profile --> Settings --> Developer settings --> Personal access token
 ```
