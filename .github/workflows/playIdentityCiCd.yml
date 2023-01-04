@@ -47,3 +47,22 @@ jobs:
         dotnet nuget push packages/*.nupkg \
         --api-key ${{secrets.NUGET_WRITE_PAT}} \
         --source https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
+        
+  build-and-deploy-service:
+    runs-on: ubuntu-latest
+    needs: generate-version
+    env:
+      ACR_NAME: playeconomyazurecontainerregistry
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build and push Docker image      
+      uses: docker/build-push-action@v3.2.0
+      with:        
+        secrets: |
+          "GH_OWNER=${{github.repository_owner}}"\ 
+          "GH_PAT=${{secrets.NUGET_READ_PAT}}"
+        
+        tags: ${{env.ACR_NAME}}.azurecr.io/play.identity:${{needs.generate-version.outputs.new_version}}
+        
+    
