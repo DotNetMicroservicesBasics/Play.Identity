@@ -32,10 +32,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
-        source-url: https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
-      env:
-        NUGET_AUTH_TOKEN: '%NUGET_AUTH_TOKEN%'
+        dotnet-version: 7.0.x        
         
     - name: Pack
       run: | 
@@ -46,7 +43,4 @@ jobs:
         -o packages
         
     - name: Publish
-      run: dotnet nuget push packages/*.nupkg
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+      run: dotnet nuget push packages/*.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/${{github.repository_owner}}/index.json  
