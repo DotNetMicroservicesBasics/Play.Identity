@@ -8,8 +8,23 @@ on:
     branches: [ "main" ]
 
 jobs:
+  generate-version:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Bump version and push tag
+      id: tag_bump
+      uses: anothrNick/github-tag-action@1.56.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        INITIAL_VERSION: 1.0.2
+        DEFAULT_BUMP: patch
+        
+    outputs:
+      new_version: ${{steps.tag_bump.outputs.new_tag}}    
+    
   package-and-publish-contracts:
     runs-on: ubuntu-latest
+    needs: generate-version
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -17,4 +32,9 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Pack
-      run: dotnet pack src/Play.Identity.Contracts --configuration Release -p:RepositoryUrl=https://github.com/${{github.repository_owner}}/Play.Identity -o packages
+      run: | 
+        dotnet pack src/Play.Identity.Contracts \
+        --configuration Release \
+        -p:PackageVersion=${{needs.generate-version.outputs.new_version}} \
+        -p:RepositoryUrl=https://github.com/${{github.repository_owner}}/Play.Identity \
+        -o packages
