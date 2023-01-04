@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Bump version and push tag
       id: tag_bump
-      uses: anothrNick/github-tag-action@1ffbb2e04bd950cffea99066469cb16d69a7887e
+      uses: anothrNick/github-tag-action@172098fd43f4c6383c4babeaa59d5d967eab18c4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         INITIAL_VERSION: 1.0.2
