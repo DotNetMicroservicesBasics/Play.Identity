@@ -147,5 +147,6 @@ helm repo update
 
 ## Required repository secrets for Github workflow
 ```powershell
-GH_PAT: Created in GitHub user profile --> Settings --> Developer settings --> Personal access token
+NUGET_READ_PAT: Created in GitHub user profile --> Settings --> Developer settings --> Personal access token
+NUGET_WRITE_PAT: Created in GitHub user profile --> Settings --> Developer settings --> Personal access token
 ```
