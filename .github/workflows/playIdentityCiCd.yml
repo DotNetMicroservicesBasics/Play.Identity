@@ -69,7 +69,10 @@ jobs:
         # TenantId of the Azure Service principal created.
         tenant-id: ${{secrets.AZURE_TENANT_ID}}
         # Azure subscriptionId
-        subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}        
+        subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}   
+        
+    - name: Login to container registry
+      run: az acr login --name ${{env.ACR_NAME}}
     
     - name: Build and push Docker image      
       uses: docker/build-push-action@v2.9.0
@@ -78,5 +81,4 @@ jobs:
           "GH_OWNER=${{github.repository_owner}}"
           "GH_PAT=${{secrets.NUGET_READ_PAT}}"
         tags: ${{env.ACR_NAME}}.azurecr.io/play.identity:${{needs.generate-version.outputs.new_version}}
-        
-    
+        push: true
