@@ -52,7 +52,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: generate-version
     env:
+      APP_NAME: playeconomy
       ACR_NAME: playeconomyazurecontainerregistry
+      AKS_NAME: playeconomyakscluster
+      SVC_NAME: playidentity
+      HLM_CHRT_V: 0.1.0
     
     permissions:
       id-token: write
@@ -82,3 +86,31 @@ jobs:
           "GH_PAT=${{secrets.NUGET_READ_PAT}}"
         tags: ${{env.ACR_NAME}}.azurecr.io/play.identity:${{needs.generate-version.outputs.new_version}}
         push: true
+        
+    - name: Get AKS Credentials
+      run: | 
+        az aks get-credentials \
+        --resource-group ${{env.APP_NAME}} \
+        --name ${{env.AKS_NAME}}
+        
+    - name: Helm tool installer
+      uses: Azure/setup-helm@v3.5
+    
+    - name: login to Helm registery
+      run: | 
+        helmUser="00000000-0000-0000-0000-000000000000" 
+        helmPassword=$(az acr login --name ${{env.ACR_NAME}} --expose-token --query accessToken -o tsv)
+        helm registry login "${{env.ACR_NAME}}.azurecr.io" --username $helmUser --password $helmPassword
+        
+    - name: deploy Helm Chart
+      run: |
+        helm upgrade \
+        --install ${{env.SVC_NAME}}-svc \
+        oci://${{env.ACR_NAME}}.azurecr.io/helm/microservice \
+        --version ${{env.HLM_CHRT_V}} \
+        -f helm/alues.yaml \
+        -n ${{env.SVC_NAME}} \
+        --set image.tag=${{needs.generate-version.outputs.new_version}} \
+        --wait
+        
+    
