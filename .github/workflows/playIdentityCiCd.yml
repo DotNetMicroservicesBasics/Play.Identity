@@ -108,7 +108,7 @@ jobs:
         --install ${{env.SVC_NAME}}-svc \
         oci://${{env.ACR_NAME}}.azurecr.io/helm/microservice \
         --version ${{env.HLM_CHRT_V}} \
-        -f helm/alues.yaml \
+        -f helm/values.yaml \
         -n ${{env.SVC_NAME}} \
         --set image.tag=${{needs.generate-version.outputs.new_version}} \
         --wait
