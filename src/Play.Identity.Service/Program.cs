@@ -10,6 +10,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Play.Common.Configuration;
 using Play.Common.HealthChecks;
+using Play.Common.Logging;
 using Play.Common.MassTansit;
 using Play.Common.Settings;
 using Play.Identity.Service.Entities;
@@ -27,11 +28,8 @@ public class Program
         var allowedOriginsSettingsKey = "AllowedOrigins";
 
         var builder = WebApplication.CreateBuilder(args);
-
-        if (builder.Environment.IsProduction())
-        {
-            builder.Configuration.ConfigureAzureKeyVault();
-        }
+       
+        builder.ConfigureAzureKeyVault();   
 
         builder.Services.Configure<Settings.IdentitySettings>(builder.Configuration.GetSection(nameof(Settings.IdentitySettings)));
 
@@ -43,6 +41,8 @@ public class Program
         var identitySettings = builder.Configuration.GetSection(nameof(Settings.IdentitySettings)).Get<Settings.IdentitySettings>();
 
         // Add services to the container.
+
+        builder.Services.AddSeqLogging(builder.Configuration);
 
         builder.Services.AddDefaultIdentity<ApplicationUser>()
                         .AddRoles<ApplicationRole>()

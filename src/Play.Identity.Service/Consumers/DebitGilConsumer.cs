@@ -10,16 +10,18 @@ namespace Play.Identity.Service.Consumers
     {
 
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<DebitGilConsumer> _logger;
 
-        public DebitGilConsumer(UserManager<ApplicationUser> userManager)
+        public DebitGilConsumer(UserManager<ApplicationUser> userManager, ILogger<DebitGilConsumer> logger)
         {
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task Consume(ConsumeContext<DebitGil> context)
         {
             var message = context.Message;
-
+            _logger.LogInformation("Receive Grant Debit Gil Event of {Gil} from user {UserId} with CorrelationId {CorrelationId}", message.Gil, message.UserId, message.CorrelationId);
             var user = await _userManager.FindByIdAsync(message.UserId.ToString());
             if (user == null)
             {
@@ -36,6 +38,7 @@ namespace Play.Identity.Service.Consumers
 
             if (user.Gil < 0)
             {
+                _logger.LogWarning("Not enough gil to debit {gilToDebit} from user {userId} with CorrelationId {CorrelationId}", message.Gil, message.UserId, message.CorrelationId);
                 throw new InsufficientUserGilException(message.UserId, message.Gil);
             }
 
