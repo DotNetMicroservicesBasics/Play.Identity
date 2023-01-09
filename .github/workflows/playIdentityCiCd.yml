@@ -56,7 +56,7 @@ jobs:
       ACR_NAME: playeconomyazurecontainerregistry
       AKS_NAME: playeconomyakscluster
       SVC_NAME: playidentity
-      HLM_CHRT_V: 0.1.1
+      HLM_CHRT_V: 0.1.2
     
     permissions:
       id-token: write
