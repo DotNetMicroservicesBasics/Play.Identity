@@ -9,6 +9,7 @@ using Play.Common.Configuration;
 using Play.Common.HealthChecks;
 using Play.Common.Logging;
 using Play.Common.MassTansit;
+using Play.Common.OpenTelemetry;
 using Play.Common.Settings;
 using Play.Identity.Service.Entities;
 using Play.Identity.Service.Exceptions;
@@ -39,7 +40,8 @@ public class Program
 
         // Add services to the container.
 
-        builder.Services.AddSeqLogging(builder.Configuration);
+        builder.Services.AddSeqLogging(builder.Configuration)
+                        .AddTracing(builder.Configuration);
 
         builder.Services.AddDefaultIdentity<ApplicationUser>()
                         .AddRoles<ApplicationRole>()
