@@ -1,10 +1,7 @@
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using Azure.Identity;
-using GreenPipes;
 using MassTransit;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
