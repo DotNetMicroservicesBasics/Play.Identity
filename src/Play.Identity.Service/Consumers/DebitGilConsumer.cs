@@ -1,5 +1,7 @@
+using System.Diagnostics.Metrics;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
+using Play.Common.Settings;
 using Play.Identity.Contracts;
 using Play.Identity.Service.Entities;
 using Play.Identity.Service.Exceptions;
@@ -11,11 +13,17 @@ namespace Play.Identity.Service.Consumers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<DebitGilConsumer> _logger;
+        private readonly Counter<int> _debitGilCounter;
 
-        public DebitGilConsumer(UserManager<ApplicationUser> userManager, ILogger<DebitGilConsumer> logger)
+        public DebitGilConsumer(UserManager<ApplicationUser> userManager, ILogger<DebitGilConsumer> logger, IConfiguration configuration)
         {
             _userManager = userManager;
             _logger = logger;
+
+            var serviceSettings=configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
+            var meter= new Meter(serviceSettings.ServiceName);
+            _debitGilCounter=meter.CreateCounter<int>("GilDebited");
+
         }
 
         public async Task Consume(ConsumeContext<DebitGil> context)
@@ -43,6 +51,8 @@ namespace Play.Identity.Service.Consumers
             }
 
             await _userManager.UpdateAsync(user);
+
+            _debitGilCounter.Add(1, new KeyValuePair<string, object?>(nameof(message.UserId), message.UserId));
 
             var gilDebitedTask = context.Publish(new GilDebited(message.CorrelationId));
 
